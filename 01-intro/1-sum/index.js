@@ -7,4 +7,6 @@
  */
 export const sum = (m, n) => {
 
+	return (n+m);
+
 };
