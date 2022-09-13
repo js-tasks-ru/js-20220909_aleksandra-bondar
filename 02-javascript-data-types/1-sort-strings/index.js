@@ -6,4 +6,9 @@
  */
 export function sortStrings(arr, param = 'asc') {
 
+    let arrCopy = arr.slice();
+    arrCopy.sort(new Intl.Collator(['ru', 'en'], {caseFirst: 'upper'}).compare);
+    return param === 'desc' ? arrCopy.reverse() : arrCopy;
+
 }
+
