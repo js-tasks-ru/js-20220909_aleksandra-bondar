@@ -10,7 +10,6 @@ export const pick = (obj, ...fields) => {
     fields.forEach((item, index, array) => {
         pickObj[item] = obj[item];
       });
-
     return pickObj;
 
 };
