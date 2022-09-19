@@ -17,7 +17,7 @@ export function trimSymbols(string, size) {
             current = i;
             counter = 0;
         }        
-        if (counter++ < size) result = result + i;
+        if (counter++ < size) result += i;
     }
     return result; 
            
