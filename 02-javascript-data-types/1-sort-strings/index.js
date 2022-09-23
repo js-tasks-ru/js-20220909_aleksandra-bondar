@@ -11,8 +11,12 @@
          
     if (param === 'desc') {
         return arrCopy.sort((a, b) => -collator.compare(a, b));         
-    } else {
+    } 
+    
+    if (param === 'asc') {
         return arrCopy.sort(collator.compare);        
     }
+
+    throw new Error('Wrong sorting param');
 
 }
