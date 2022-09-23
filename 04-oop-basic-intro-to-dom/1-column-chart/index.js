@@ -21,44 +21,38 @@ export default class ColumnChart {
     }
 
     getHTML() {
-        if (!this.data.length) {
-            return `
-            <div class="column-chart_loading">
-                <div class="column-chart__title">Total ${this.label} ${this.getLink()}</div>                   
-                <div class="column-chart__container">
-                    <div class="column-chart__header">${this.value}</div>
-                </div> 
-            </div>`;
-        }
-
+        
+        const curClass = this.data.length ? "column-chart" : "column-chart_loading";
+        
         return `
-        <div class="column-chart">
+        <div class=${curClass}]>
             <div class="column-chart__title">Total ${this.label} ${this.getLink()}</div> 
             <div class="column-chart__container">
                 <div class="column-chart__header">${this.value}</div>
-                <div class="column-chart__chart">${this.getCharts()}</div> 
+                ${this.getCharts()} 
             </div>  
         </div>`;
 
     }
 
     getLink() {
-        if (!this.link) return '';
-        return `<a class="column-chart__link" href="${this.link}">View all</a>`;
+        return this.link ? `<a class="column-chart__link" href="${this.link}">View all</a>` : '';
     }
 
     getCharts() {
+
+        if (!this.data.length) return ''; 
         
         const maxElem = Math.max(...this.data);
         const coef = this.chartHeight / maxElem;     
-        let columns = ``;
+        let columns = `<div class="column-chart__chart">`;
         
         for (const elem of this.data) { 
             const percent = Math.round(elem/maxElem*100);
             const chartValue = Math.floor(coef*elem);
             columns += `<div style="--value:${chartValue}" data-tooltip="${percent}%"></div>`;            
         }
-        return columns;
+        return columns += `</div>`;
 
     }
  
