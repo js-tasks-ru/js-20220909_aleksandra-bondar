@@ -16,16 +16,15 @@ export default class ColumnChart {
         
         const element = document.createElement('div');
         element.innerHTML = this.getHTML();
-        element.classList.add((this.data.length) ? "column-chart" : "column-chart_loading");
-        this.element = element;
+        this.element = element.firstElementChild;
     }
 
-    getHTML() {
+    getHTML() {  
         
         const curClass = this.data.length ? "column-chart" : "column-chart_loading";
         
         return `
-        <div class=${curClass}]>
+        <div class=${curClass}>
             <div class="column-chart__title">Total ${this.label} ${this.getLink()}</div> 
             <div class="column-chart__container">
                 <div class="column-chart__header">${this.value}</div>
@@ -45,14 +44,13 @@ export default class ColumnChart {
         
         const maxElem = Math.max(...this.data);
         const coef = this.chartHeight / maxElem;     
-        let columns = `<div class="column-chart__chart">`;
-        
-        for (const elem of this.data) { 
+        let columns = this.data.map(elem => {
             const percent = Math.round(elem/maxElem*100);
             const chartValue = Math.floor(coef*elem);
-            columns += `<div style="--value:${chartValue}" data-tooltip="${percent}%"></div>`;            
-        }
-        return columns += `</div>`;
+        return `<div style="--value:${chartValue}" data-tooltip="${percent}%"></div>`;
+        });
+
+        return `<div class="column-chart__chart">` + columns.join("") + `</div>`;
 
     }
  
