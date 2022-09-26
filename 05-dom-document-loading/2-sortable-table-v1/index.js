@@ -33,8 +33,13 @@ export default class SortableTable {
 
   }
 
-  getHeader({title}) {
-    return `<div class="sortable-table__cell">${title}</div>`;
+  getHeader({title, id, sortable}) {
+    return `<div class="sortable-table__cell" data-id=${id} data-sortable=${sortable} data-order="">
+      <span>${title}</span>
+      <span data-element="arrow" class="sortable-table__sort-arrow">
+        <span class="sort-arrow"></span>
+      </span>
+    </div>`;
   }
 
   getRows(data = []) {
@@ -62,6 +67,8 @@ export default class SortableTable {
     const sortingDirection = dirArr[orderValue];
     const copyData = [...this.data];    
     const {sortType} = sortingElem;
+    const columns = this.element.querySelectorAll('.sortable-table__cell[data-id]');
+    
 
     copyData.sort((a, b) => {
       if (sortType === 'string'){
@@ -72,6 +79,10 @@ export default class SortableTable {
     });
 
     this.subElements.body.innerHTML = this.getRows(copyData);
+    
+    columns.forEach(column => {
+      column.dataset.order = column.matches(`[data-id=${fieldValue}]`) ? orderValue : '';
+    });
     
   }
  
