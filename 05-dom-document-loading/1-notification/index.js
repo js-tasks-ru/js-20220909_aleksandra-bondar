@@ -1,7 +1,7 @@
 export default class NotificationMessage {
 
     static openedNotify;
-    static timeoutId;
+    timeoutId;
 
     constructor(message = '', {type = 'success', duration = 2000} = {})
         {
@@ -33,28 +33,22 @@ export default class NotificationMessage {
 
     }
 
-    show(parentElem){
+    show(parent = document.body){
 
-        this.clearOpenedNotify();
+        if (NotificationMessage.openedNotify) {
+            NotificationMessage.activeNotification.remove();
+        }
 
-        const parent = (parentElem) ? parentElem : document.body;
         parent.append(this.element);
 
-        NotificationMessage.timeoutId = setTimeout(this.destroy.bind(this), this.duration);
+        this.timeoutId = setTimeout(this.destroy.bind(this), this.duration);
         NotificationMessage.openedNotify = this;
 
     }
 
-    clearOpenedNotify(){
-
-        if (NotificationMessage.openedNotify) {
-            clearTimeout(NotificationMessage.timeoutId);            
-            this.destroy.call(NotificationMessage.openedNotify);
-        }
-
-    }
-
     remove() {
+        clearTimeout(this.timeoutId);
+
         if (this.element) {
             this.element.remove();
         }
@@ -63,7 +57,6 @@ export default class NotificationMessage {
     destroy() {
         this.remove();
         this.element = null;
-        NotificationMessage.timeoutId = null;
         NotificationMessage.openedNotify = null;
     }
 }
