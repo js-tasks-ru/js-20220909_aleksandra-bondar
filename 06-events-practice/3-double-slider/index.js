@@ -56,8 +56,14 @@ export default class DoubleSlider {
   }
   
   onPointerMove = (event) => {
-    
-    const leftMarginProcent = Math.floor((event.clientX - this.sliderLeftPos) / this.sliderWidth * 100);
+
+    let leftMarginProcent = 0;
+    if (event.clientX > this.sliderLeftPos + this.sliderWidth) {
+      leftMarginProcent = 100;
+    } else if  (event.clientX > this.sliderLeftPos) {
+      leftMarginProcent = Math.floor((event.clientX - this.sliderLeftPos) / this.sliderWidth * 100);
+    }   
+     
     const sideValues = {'left-thumb': {'side' : 'left', 'elemName': 'from', 'progressPositionValue' : leftMarginProcent + '%'},
                       'right-thumb': {'side' : 'right', 'elemName': 'to', 'progressPositionValue' : (100 - leftMarginProcent) + '%'}};
     const currentElem = sideValues[this.switchElem];
