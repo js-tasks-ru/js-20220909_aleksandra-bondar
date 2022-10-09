@@ -1,7 +1,8 @@
 class Tooltip {
 
   static onlyElem;
-  element
+  element;
+  shift = 10;
 
   constructor() {
     if (Tooltip.onlyElem) {
@@ -41,8 +42,8 @@ class Tooltip {
 
   onPointerMove = (event) => {
     if (event.target.dataset.tooltip) {
-      this.element.style.left = event.clientX + 10 + 'px';
-      this.element.style.top = event.clientY + 10 + 'px';
+      this.element.style.left = event.clientX + this.shift + 'px';
+      this.element.style.top = event.clientY + this.shift + 'px';
     }
   }; 
 
