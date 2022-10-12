@@ -73,12 +73,12 @@ export default class SortableTable {
     
     this.element.classList.add("sortable-table_loading");
 
+    this.url.searchParams.set("from", from.toISOString());
+    this.url.searchParams.set("to", to.toISOString());
     this.url.searchParams.set("_sort", this.sortedId);
     this.url.searchParams.set("_order", this.sortedOrder);
     this.url.searchParams.set("_start", this.start);
-    this.url.searchParams.set("_end", this.start + this.limit); 
-    this.url.searchParams.set("from", from);
-    this.url.searchParams.set("to", to);   
+    this.url.searchParams.set("_end", this.start + this.limit);      
 
     const newData = await fetchJson(this.url);    
 

@@ -14,6 +14,7 @@ export default class Page {
     subElements = {};
     url = new URL('/api/dashboard', BACKEND_URL);
     columnCharts = [];
+    table;
     
     async render() {   
         const wrapper = document.createElement('div');
@@ -58,7 +59,7 @@ export default class Page {
         this.addColumnChart("orders", from, to, 'sales');
         this.addColumnChart("sales", from, to, '', (data) => `$${data}`);
         this.addColumnChart("customers", from, to);
-        this.addSortableTable();
+        this.addSortableTable(from, to);
     }  
 
     addRangePicker(from, to) {
@@ -84,7 +85,7 @@ export default class Page {
         this.columnCharts.push(newChart);
     }
 
-    addSortableTable() {
+    addSortableTable(from, to) {
         const newTable = new SortableTable(header, {
         url: `${this.url}/bestsellers`,
         isSortLocally: true,
@@ -95,12 +96,13 @@ export default class Page {
         });
 
         this.subElements.sortableTable.append(newTable.element);
+        this.table = newTable;
     }
 
     rangeSelected = async (event) => {
         const {from, to} = event.detail;
         const promises = [...this.columnCharts.map((ColumnChart) => ColumnChart.update(from, to)),
-        SortableTable.loadData(from, to)];
+        this.table.loadData(from, to)];
         await Promise.all(promises);
     };
   
