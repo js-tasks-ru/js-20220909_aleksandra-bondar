@@ -87,7 +87,11 @@ export default class Page {
     addSortableTable() {
         const newTable = new SortableTable(header, {
         url: `${this.url}/bestsellers`,
-        isSortLocally: true
+        isSortLocally: true,
+        range: {
+            from,
+            to,
+        }
         });
 
         this.subElements.sortableTable.append(newTable.element);
@@ -95,7 +99,8 @@ export default class Page {
 
     rangeSelected = async (event) => {
         const {from, to} = event.detail;
-        const promises = [...this.columnCharts.map((ColumnChart) => ColumnChart.update(from, to))];
+        const promises = [...this.columnCharts.map((ColumnChart) => ColumnChart.update(from, to)),
+        SortableTable.loadData(from, to)];
         await Promise.all(promises);
     };
   
