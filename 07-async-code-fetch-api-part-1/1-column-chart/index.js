@@ -8,7 +8,7 @@ export default class ColumnChart {
     element;
     subElements = {};
     
-    constructor({label = '', value = 0, link = '', formatHeading = (data) => data} = {})
+    constructor({label = '', value = 0, link = '', formatHeading = (data) => data, url = '', range = {from: new Date(), to: new Date()}} = {})
         {        
         this.label = label;
         this.value = value;
@@ -16,9 +16,11 @@ export default class ColumnChart {
         this.formatHeading = formatHeading;
         this.data = {}
         this.max = 0;
-        this.url = new URL(`/api/dashboard/${this.label}`, BACKEND_URL);
+        this.url = new URL(url, BACKEND_URL);
+        this.range = range;
         
         this.render();
+        this.update(this.range.from, this.range.to);
         }
 
         render() {
@@ -51,7 +53,7 @@ export default class ColumnChart {
             if (this.max === 0) return ''; 
             
             const coef = this.chartHeight / this.max; 
-            let columns = Object.values(this.data).map(elem => {
+            const columns = Object.values(this.data).map(elem => {
                 const percent = Math.round(elem/this.max*100);
                 const chartValue = Math.floor(coef*elem);
             return `<div style="--value: ${chartValue}" data-tooltip="${percent}%"></div>`;
@@ -88,16 +90,14 @@ export default class ColumnChart {
 
         async getJson(from, to){
 
-            this.url.searchParams.set('from', from.toJSON());
-            this.url.searchParams.set('to', to.toJSON());
+            this.url.searchParams.set('from', from.toISOString());
+            this.url.searchParams.set('to', to.toISOString());
             try {
-                await fetchJson(this.url)
-                    .then(json => {
-                        this.data = json;                        
-                });   
+                const data = await fetchJson(this.url);
+                this.data = data;
             } catch(err) {
                 throw new Error(err);
-                };
+                };                
                 
         }
 
