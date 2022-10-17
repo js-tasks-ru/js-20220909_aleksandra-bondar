@@ -13,9 +13,9 @@ export default class Page {
     element;
     subElements = {};
     url = new URL('/api/dashboard', BACKEND_URL);
-    columnCharts = [];
-    table;
-    
+    components = [];
+    progressBar;
+       
     async render() {   
         const wrapper = document.createElement('div');
         wrapper.innerHTML = this.getHTML();
@@ -24,7 +24,12 @@ export default class Page {
 
         this.renderComponents();
         this.element.addEventListener("date-select", this.rangeSelected);
-            
+
+        this.progressBar = document.getElementsByClassName("progress-bar")[0];
+        if (this.progressBar) {
+            this.progressBar.style.display = "none";
+        }
+                    
         return this.element;
     }
 
@@ -82,7 +87,7 @@ export default class Page {
           });
 
         this.subElements[`${label}Chart`].append(newChart.element);
-        this.columnCharts.push(newChart);
+        this.components.push(newChart);
     }
 
     addSortableTable(from, to) {
@@ -96,14 +101,15 @@ export default class Page {
         });
 
         this.subElements.sortableTable.append(newTable.element);
-        this.table = newTable;
+        this.components.push(newTable);
     }
 
     rangeSelected = async (event) => {
         const {from, to} = event.detail;
-        const promises = [...this.columnCharts.map((ColumnChart) => ColumnChart.update(from, to)),
-        this.table.loadData(from, to)];
+        const promises = [...this.components.map((component) => component.update(from, to))];
+        this.progressBar.style.display = "block";
         await Promise.all(promises);
+        this.progressBar.style.display = "none";
     };
   
     getSubElements() {
@@ -128,5 +134,8 @@ export default class Page {
         this.remove();
         this.element = null;
         this.subElements = {};
+        for (const component of this.components) {
+          component.destroy();
+        }
     }
 }
