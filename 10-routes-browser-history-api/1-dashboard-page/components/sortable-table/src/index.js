@@ -69,6 +69,11 @@ export default class SortableTable {
 
   }
 
+  async update(from, to){
+    this.data = await this.loadData(from, to);
+    this.subElements.body.innerHTML = this.getRows(this.data);
+  }
+
   async loadData(from = this.range.from, to = this.range.to) {
     
     this.element.classList.add("sortable-table_loading");
